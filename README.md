@@ -8,3 +8,4 @@ create gatsby-browser and gatsby-ssr
 
 create function :🍩 netlify function:create bookmarklist
 
+create server
