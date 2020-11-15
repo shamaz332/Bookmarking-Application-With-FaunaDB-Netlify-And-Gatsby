@@ -12,12 +12,13 @@ const typeDefs = gql`
     bookmarks: [Bookmark!]
   }
   type Mutation {
-    addBookmark(title: String!, url: String!): Bookmark
+    addBookmark(title: String!, url: String!,description:String!): Bookmark
   }
   type Bookmark {
     id: ID!
     title: String!
     url: String!
+    description: String!
   }
 `
 const resolvers = {
@@ -26,13 +27,20 @@ const resolvers = {
       try {
         const result = await adminClient.query(
           q.Map(
-            q.Paginate(q.Match(q.Index("bookmarks"))),
+            q.Paginate(q.Match(q.Index("bookmark"))),
             q.Lambda(x => q.Get(x))
           )
         )
 
-        console.log(result.data)
-        return result.data
+        console.log(result.data);
+        return result.data.map(da => {
+          return {
+            id: da.ref.id,
+            title: da.data.title,
+            url: da.data.url,
+            description: da.data.description,
+          }
+        })
       } catch (error) {
         console.log(error)
       }
@@ -40,13 +48,14 @@ const resolvers = {
   },
 
   Mutation: {
-    addBookmark: async (_, { title, url }) => {
+    addBookmark: async (_, { title, url,description }) => {
       try {
         const result = await adminClient.query(
           q.Create(q.Collection("bookmarks"), {
             data: {
               title: title,
               url: url,
+              description:description
             },
           })
         )

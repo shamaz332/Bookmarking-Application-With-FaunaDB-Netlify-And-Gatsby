@@ -6,6 +6,9 @@ import gql from "graphql-tag"
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import { Button, Typography } from "@material-ui/core";
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -13,7 +16,15 @@ const useStyles = makeStyles((theme: Theme) =>
       '& > *': {
         margin: theme.spacing(1),
         width: '25ch',
+        flexGrow: 1,
       },
+
+
+    },
+    paper: {
+      padding: theme.spacing(2),
+      textAlign: 'center',
+      color: theme.palette.text.secondary,
     },
   }),
 );
@@ -22,18 +33,19 @@ const useStyles = makeStyles((theme: Theme) =>
 const GET_BOOKMARK = gql`
   {
     bookmarks {
-      id
-      title
-      url
+      id,
+      title,
+      url,
+      description
     }
   }
 `
-
 const ADD_BOOKMARK = gql`
-  mutation addBookmark($title: String!, $url: String!) {
-    addBookmark(title: $title, url: $url) {
+  mutation addBookmark($title: String!, $url: String!,$description:String!) {
+    addBookmark(title: $title, url: $url,description:$description) {
       title
       url
+      description
     }
   }
 `
@@ -42,8 +54,8 @@ export default function Home() {
   const classes = useStyles();
   let inputTitle
   let inputUrl
+  let inputDescription
   const [addBookmark] = useMutation(ADD_BOOKMARK)
-
   const { loading, error, data } = useQuery(GET_BOOKMARK)
 
   const addBookmarkToDB = () => {
@@ -51,30 +63,41 @@ export default function Home() {
       variables: {
         title: inputTitle.value,
         url: inputUrl.value,
+        description: inputDescription.value
       },
       refetchQueries: [{ query: GET_BOOKMARK }],
     })
     inputTitle.value = ""
     inputUrl.value = ""
+    inputDescription.value = ""
   }
   if (loading) return <h2>Loading.....</h2>
   if (error) return <h2>Error</h2>
-
+console.log(data.bookmarks)
   return (
     <div>
       <Typography variant="h3" component="h2">
-Bookmark Your Notes 💌
+        Bookmark Your Notes 💌
 </Typography>
-       <form className={classes.root} noValidate autoComplete="off">
-      <TextField id="outlined-basic" label="Title" variant="outlined" inputRef={node => {
-            inputTitle = node
-          }}/>
-      <TextField id="outlined-basic" label="Url" variant="outlined"  inputRef={node => {
-            inputUrl = node
-          }}/>
+{data.bookmarks.map((d)=>{
+{d.title}
+})}
+      <form className={classes.root} autoComplete="off">
+        <TextField required id="outlined-required" label="Title" variant="outlined" inputRef={node => {
+          inputTitle = node
+        }} />
+        <TextField required id="outlined-required" label="Url" variant="outlined" inputRef={node => {
+          inputUrl = node
+        }} />
+        <TextField required id="outlined-required" label="Description" variant="outlined" inputRef={node => {
+          inputDescription = node
+        }} />
 
-    </form>
+      </form>
+      <br /><br />
       <Button variant="contained" color="primary" onClick={addBookmarkToDB}>Add Bookmark</Button>
+      <br /><br />
+
     </div>
   )
 }
