@@ -17,6 +17,8 @@
   "dependencies": {
     "apollo-server-lambda": "^2.18.2",
     "faunadb": "^3.0.1",
-    "graphql": "^14.1.1"
+    "graphql": "^14.1.1",
+    "encoding": "^0.1.13",
+    "netlify-lambda": "^2.0.1"
   }
 }
