@@ -1,6 +1,6 @@
 step 1 = create toml file
 
-npm i @apollo/client graphql dotenv cross-fetch faunadb netlify-lambda encoding
+npm i @apollo/client graphql netlify-lambda
 
 create apollo client in src
 
