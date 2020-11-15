@@ -5,9 +5,11 @@ import gql from "graphql-tag"
 //material ui code
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import { Button, Typography } from "@material-ui/core";
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
+import { Button, Grid, Typography } from "@material-ui/core";
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardContent from '@material-ui/core/CardContent';
+
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -15,8 +17,8 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       '& > *': {
         margin: theme.spacing(1),
-        width: '25ch',
         flexGrow: 1,
+        minWidth: 345,
       },
 
 
@@ -25,6 +27,12 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2),
       textAlign: 'center',
       color: theme.palette.text.secondary,
+    },
+    card:{
+      maxWidth: 345,
+      backgroundColor:"black",
+      margin:13,
+      color:"white",
     },
   }),
 );
@@ -73,15 +81,13 @@ export default function Home() {
   }
   if (loading) return <h2>Loading.....</h2>
   if (error) return <h2>Error</h2>
-console.log(data.bookmarks)
+  console.log(data.bookmarks)
   return (
     <div>
       <Typography variant="h3" component="h2">
         Bookmark Your Notes 💌
 </Typography>
-{data.bookmarks.map((d)=>{
-{d.title}
-})}
+
       <form className={classes.root} autoComplete="off">
         <TextField required id="outlined-required" label="Title" variant="outlined" inputRef={node => {
           inputTitle = node
@@ -97,7 +103,29 @@ console.log(data.bookmarks)
       <br /><br />
       <Button variant="contained" color="primary" onClick={addBookmarkToDB}>Add Bookmark</Button>
       <br /><br />
+      <Grid container>
+{data.bookmarks.map((d)=>(
 
+<Card className={classes.card}>
+<CardActionArea>
+  <CardContent>
+    <Typography variant="h5" component="h2">
+      {d.title}
+    </Typography>
+    <Typography variant="body2"component="p">
+     {d.description}
+    </Typography>
+    <br/>    <br/>
+    <Button  variant="contained" color="primary" href={d.url}>
+    Learn More
+  </Button>
+  </CardContent>
+</CardActionArea>
+</Card>
+
+
+))}
+</Grid>
     </div>
   )
 }
