@@ -24,7 +24,7 @@ const typeDefs = gql`
 `;
 const resolvers = {
   Query: {
-    todos: async (root, args, context) => {
+    bookmarks: async (root, args, context) => {
       try {
         const result = await adminClient.query(
           q.Map(
